@@ -72,6 +72,7 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetTPS(ebiten.SyncWithFPS)
 	ebiten.SetWindowDecorated(false)
+	ebiten.SetWindowFloating(true)
 
 	g := &Game{}
 	g.mgr = renderer.NewManager(face, 14)
