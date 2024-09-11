@@ -18,11 +18,48 @@ type AppState struct {
 	fileName string
 }
 
+// Extend TextArea
+type CustomTextArea struct {
+	widget.Entry
+}
+
+var (
+	state    *AppState
+	myWindow fyne.Window
+	textArea *CustomTextArea
+)
+
+// Extend NewMultiLineEntry
+func CustomNewMultiLineEntry() *CustomTextArea {
+	e := &CustomTextArea{}
+	e.ExtendBaseWidget(e)
+	e.MultiLine = true
+	e.Wrapping = fyne.TextWrap(fyne.TextTruncateClip)
+	return e
+}
+
+// Apply custom shortcut on local widget
+func (c *CustomTextArea) TypedShortcut(s fyne.Shortcut) {
+	if _, ok := s.(*desktop.CustomShortcut); !ok {
+		c.Entry.TypedShortcut(s)
+		return
+	} else if ok {
+		t := s.(*desktop.CustomShortcut)
+		if t.Modifier == fyne.KeyModifierControl {
+			switch t.KeyName {
+			case fyne.KeyS:
+				state.saveFile(myWindow, textArea, false)
+			}
+		}
+
+	}
+}
+
 func main() {
 	fmt.Println("Stinote is a simple sticky note application")
 
 	myApp := app.NewWithID("stinote")
-	myWindow := myApp.NewWindow("Stinote")
+	myWindow = myApp.NewWindow("Stinote")
 
 	// SplashWindow is a window borderless
 	drv := fyne.CurrentApp().Driver()
@@ -31,16 +68,25 @@ func main() {
 		myWindow.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
 	}
 
-	textArea := widget.NewMultiLineEntry()
+	textArea = CustomNewMultiLineEntry()
 	textArea.Wrapping = fyne.TextWrapWord
 	textArea.TextStyle = fyne.TextStyle{Monospace: true}
 
 	// Initialize app state
-	state := &AppState{}
+	state = &AppState{}
 
 	myApp.Lifecycle().SetOnEnteredForeground(func() {
 		window.SetWindowAlwaysOnTop(myWindow)
 		window.SetWindowOnTopRightCorner(myWindow)
+	})
+
+	// Apply custom shortcut on global window
+	ctrls := &desktop.CustomShortcut{
+		Modifier: fyne.KeyModifierControl,
+		KeyName:  fyne.KeyS,
+	}
+	myWindow.Canvas().AddShortcut(ctrls, func(shortcut fyne.Shortcut) {
+		state.saveFile(myWindow, textArea, false)
 	})
 
 	myWindow.SetContent(textArea)
@@ -63,7 +109,7 @@ func main() {
 }
 
 // openFile displays a file dialog for opening files and loads the selected file into the text area.
-func (state *AppState) openFile(win fyne.Window, textArea *widget.Entry) {
+func (state *AppState) openFile(win fyne.Window, textArea *CustomTextArea) {
 	fileDialog := dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
 		if err == nil && file != nil {
 			data, err := io.ReadAll(file)
@@ -88,7 +134,7 @@ func (state *AppState) openFile(win fyne.Window, textArea *widget.Entry) {
 }
 
 // saveFile saves the content of the text area to a file. If saveAs is true, it displays a "Save As" dialog.
-func (state *AppState) saveFile(win fyne.Window, textArea *widget.Entry, saveAs bool) {
+func (state *AppState) saveFile(win fyne.Window, textArea *CustomTextArea, saveAs bool) {
 	saveAsDialog := dialog.NewFileSave(
 		func(file fyne.URIWriteCloser, err error) {
 			if err == nil && file != nil {
