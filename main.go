@@ -64,15 +64,27 @@ func main() {
 
 // openFile displays a file dialog for opening files and loads the selected file into the text area.
 func (state *AppState) openFile(win fyne.Window, textArea *widget.Entry) {
-	dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
+	fileDialog := dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
 		if err == nil && file != nil {
 			data, err := io.ReadAll(file)
 			if err == nil {
 				textArea.SetText(string(data))
 			}
 			state.fileName = file.URI().Path()
+
+			// Put back original size
+			win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
+			window.SetWindowOnTopRightCorner(win)
 		}
-	}, win).Show()
+	}, win)
+
+	// Resize the file dialog to be of a reasonable size
+	fileDialog.Resize(fyne.NewSize(800, 600))
+
+	// The file dialog maximum size is bound to the window size
+	win.Resize(fyne.NewSize(800, 600))
+
+	fileDialog.Show()
 }
 
 // saveFile saves the content of the text area to a file. If saveAs is true, it displays a "Save As" dialog.
