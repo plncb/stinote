@@ -1,6 +1,6 @@
 package consts
 
 const (
-	WindowWidth  = 200
+	WindowWidth  = 240
 	WindowHeight = 240
 )
