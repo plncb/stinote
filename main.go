@@ -40,7 +40,9 @@ func main() {
 
 	myApp.Lifecycle().SetOnEnteredForeground(func() {
 		window.SetWindowAlwaysOnTop(myWindow)
+		window.SetWindowOnTopRightCorner(myWindow)
 	})
+
 	myWindow.SetContent(textArea)
 
 	myWindow.SetMainMenu(
