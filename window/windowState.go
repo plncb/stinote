@@ -3,6 +3,7 @@ package window
 import (
 	"log"
 	"runtime"
+	"stinote/consts"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver"
@@ -90,8 +91,8 @@ func SetWindowOnTopRightCorner(win fyne.Window) {
 		x11Window := x11Context.WindowHandle
 
 		// Calculate top-right position
-		width := int16(screen.WidthInPixels) - 320 // Screen width minus window width
-		height := int16(0)                         // Top position
+		width := int16(screen.WidthInPixels) - consts.WindowWidth // Screen width minus window width
+		height := int16(0)                                        // Top position
 
 		// Move the window to the top-right corner
 		err := xproto.ConfigureWindowChecked(x, xproto.Window(x11Window), xproto.ConfigWindowX|xproto.ConfigWindowY, []uint32{uint32(width), uint32(height)}).Check()

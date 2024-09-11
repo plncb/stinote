@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"stinote/consts"
 	"stinote/window"
 
 	"fyne.io/fyne/v2"
@@ -22,13 +23,12 @@ func main() {
 
 	myApp := app.NewWithID("stinote")
 	myWindow := myApp.NewWindow("Stinote")
-	myWindow.Resize(fyne.NewSize(320, 285))
 
 	// SplashWindow is a window borderless
 	drv := fyne.CurrentApp().Driver()
 	if drv, ok := drv.(desktop.Driver); ok {
 		myWindow = drv.CreateSplashWindow()
-		myWindow.Resize(fyne.NewSize(320, 285))
+		myWindow.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
 	}
 
 	textArea := widget.NewMultiLineEntry()
