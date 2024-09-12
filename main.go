@@ -117,11 +117,10 @@ func (state *AppState) openFile(win fyne.Window, textArea *CustomTextArea) {
 				textArea.SetText(string(data))
 			}
 			state.fileName = file.URI().Path()
-
-			// Put back original size
-			win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
-			window.SetWindowOnTopRightCorner(win)
 		}
+		// Put back original size
+		win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
+		window.SetWindowOnTopRightCorner(win)
 	}, win)
 
 	// Resize the file dialog to be of a reasonable size
@@ -146,9 +145,17 @@ func (state *AppState) saveFile(win fyne.Window, textArea *CustomTextArea, saveA
 				state.fileName = file.URI().Path()
 				win.SetTitle(fmt.Sprintf("Stinote - %s", state.fileName))
 			}
+			// Put back original size
+			win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
+			window.SetWindowOnTopRightCorner(win)
 		}, win)
 
 	if saveAs || state.fileName == "" {
+		// Resize the file dialog to be of a reasonable size
+		saveAsDialog.Resize(fyne.NewSize(800, 600))
+		// The file dialog maximum size is bound to the window size
+		win.Resize(fyne.NewSize(800, 600))
+
 		saveAsDialog.Show()
 	} else {
 		err := os.WriteFile(state.fileName, []byte(textArea.Text), 0644)
