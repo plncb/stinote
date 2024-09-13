@@ -3,7 +3,6 @@ package window
 import (
 	"log"
 	"runtime"
-	"stinote/consts"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver"
@@ -86,18 +85,19 @@ func SetWindowAlwaysOnTop(win fyne.Window) {
 	})
 }
 
+// TODO : Fix for dualscreen
 func SetWindowOnTopRightCorner(win fyne.Window) {
-	runX11Operation(win, func(x11Context driver.X11WindowContext, x *xgb.Conn, screen *xproto.ScreenInfo) {
-		x11Window := x11Context.WindowHandle
+	//runX11Operation(win, func(x11Context driver.X11WindowContext, x *xgb.Conn, screen *xproto.ScreenInfo) {
+	//	x11Window := x11Context.WindowHandle
 
-		// Calculate top-right position
-		width := int16(screen.WidthInPixels) - consts.WindowWidth // Screen width minus window width
-		height := int16(0)                                        // Top position
+	//	// Calculate top-right position
+	//	width := int16(screen.WidthInPixels) - consts.WindowWidth // Screen width minus window width
+	//	height := int16(0)                                        // Top position
 
-		// Move the window to the top-right corner
-		err := xproto.ConfigureWindowChecked(x, xproto.Window(x11Window), xproto.ConfigWindowX|xproto.ConfigWindowY, []uint32{uint32(width), uint32(height)}).Check()
-		if err != nil {
-			log.Fatalf("Failed to move window: %v", err)
-		}
-	})
+	//	// Move the window to the top-right corner
+	//	err := xproto.ConfigureWindowChecked(x, xproto.Window(x11Window), xproto.ConfigWindowX|xproto.ConfigWindowY, []uint32{uint32(width), uint32(height)}).Check()
+	//	if err != nil {
+	//		log.Fatalf("Failed to move window: %v", err)
+	//	}
+	//})
 }
