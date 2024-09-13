@@ -49,6 +49,8 @@ func (c *CustomTextArea) TypedShortcut(s fyne.Shortcut) {
 			switch t.KeyName {
 			case fyne.KeyS:
 				state.saveFile(myWindow, textArea, false)
+			case fyne.KeyO:
+				state.openFile(myWindow, textArea)
 			}
 		}
 
