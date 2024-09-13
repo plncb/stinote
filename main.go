@@ -23,10 +23,27 @@ type CustomTextArea struct {
 	widget.Entry
 }
 
+// App components
 var (
 	state    *AppState
 	myWindow fyne.Window
 	textArea *CustomTextArea
+)
+
+// Shortcuts
+var (
+	ctrlS = &desktop.CustomShortcut{
+		Modifier: fyne.KeyModifierControl,
+		KeyName:  fyne.KeyS,
+	}
+	ctrlO = &desktop.CustomShortcut{
+		Modifier: fyne.KeyModifierControl,
+		KeyName:  fyne.KeyO,
+	}
+	ctrlShiftS = &desktop.CustomShortcut{
+		Modifier: fyne.KeyModifierControl + fyne.KeyModifierShift,
+		KeyName:  fyne.KeyS,
+	}
 )
 
 // Extend NewMultiLineEntry
@@ -38,7 +55,7 @@ func CustomNewMultiLineEntry() *CustomTextArea {
 	return e
 }
 
-// Apply custom shortcut on local widget
+// Apply custom shortcuts on local widget
 func (c *CustomTextArea) TypedShortcut(s fyne.Shortcut) {
 	if _, ok := s.(*desktop.CustomShortcut); !ok {
 		c.Entry.TypedShortcut(s)
@@ -51,6 +68,12 @@ func (c *CustomTextArea) TypedShortcut(s fyne.Shortcut) {
 				state.saveFile(myWindow, textArea, false)
 			case fyne.KeyO:
 				state.openFile(myWindow, textArea)
+			}
+		}
+		if t.Modifier == fyne.KeyModifierControl+fyne.KeyModifierShift {
+			switch t.KeyName {
+			case fyne.KeyS:
+				state.saveFile(myWindow, textArea, true)
 			}
 		}
 
@@ -82,13 +105,18 @@ func main() {
 		window.SetWindowOnTopRightCorner(myWindow)
 	})
 
-	// Apply custom shortcut on global window
-	ctrls := &desktop.CustomShortcut{
-		Modifier: fyne.KeyModifierControl,
-		KeyName:  fyne.KeyS,
-	}
-	myWindow.Canvas().AddShortcut(ctrls, func(shortcut fyne.Shortcut) {
+	// Shortcuts
+	// Save File
+	myWindow.Canvas().AddShortcut(ctrlS, func(shortcut fyne.Shortcut) {
 		state.saveFile(myWindow, textArea, false)
+	})
+	// Save As File
+	myWindow.Canvas().AddShortcut(ctrlShiftS, func(shortcut fyne.Shortcut) {
+		state.saveFile(myWindow, textArea, true)
+	})
+	// Open File
+	myWindow.Canvas().AddShortcut(ctrlO, func(shortcut fyne.Shortcut) {
+		state.openFile(myWindow, textArea)
 	})
 
 	myWindow.SetContent(textArea)
