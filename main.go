@@ -102,7 +102,7 @@ func main() {
 
 	myApp.Lifecycle().SetOnEnteredForeground(func() {
 		window.SetWindowAlwaysOnTop(myWindow)
-		window.SetWindowOnTopRightCorner(myWindow)
+		window.SetWindowOnTopRightCorner(myWindow, consts.WindowWidth)
 	})
 
 	// Shortcuts
@@ -150,14 +150,17 @@ func (state *AppState) openFile(win fyne.Window, textArea *CustomTextArea) {
 		}
 		// Put back original size
 		win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
-		window.SetWindowOnTopRightCorner(win)
+		window.SetWindowOnTopRightCorner(win, consts.WindowWidth)
 	}, win)
 
-	// Resize the file dialog to be of a reasonable size
-	fileDialog.Resize(fyne.NewSize(800, 600))
+	// To avoid the window to exceeds on the right in dualscreen setup
+	window.SetWindowOnTopRightCorner(win, 800)
 
 	// The file dialog maximum size is bound to the window size
 	win.Resize(fyne.NewSize(800, 600))
+
+	// Resize the file dialog to be of a reasonable size
+	fileDialog.Resize(fyne.NewSize(800, 600))
 
 	fileDialog.Show()
 }
@@ -177,14 +180,19 @@ func (state *AppState) saveFile(win fyne.Window, textArea *CustomTextArea, saveA
 			}
 			// Put back original size
 			win.Resize(fyne.NewSize(consts.WindowWidth, consts.WindowHeight))
-			window.SetWindowOnTopRightCorner(win)
+			window.SetWindowOnTopRightCorner(win, consts.WindowWidth)
 		}, win)
 
 	if saveAs || state.fileName == "" {
-		// Resize the file dialog to be of a reasonable size
-		saveAsDialog.Resize(fyne.NewSize(800, 600))
+
+		// To avoid the window to exceeds on the right in dualscreen setup
+		window.SetWindowOnTopRightCorner(win, 800)
+
 		// The file dialog maximum size is bound to the window size
 		win.Resize(fyne.NewSize(800, 600))
+
+		// Resize the file dialog to be of a reasonable size
+		saveAsDialog.Resize(fyne.NewSize(800, 600))
 
 		saveAsDialog.Show()
 	} else {

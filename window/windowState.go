@@ -3,7 +3,6 @@ package window
 import (
 	"log"
 	"runtime"
-	"stinote/consts"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver"
@@ -87,7 +86,7 @@ func SetWindowAlwaysOnTop(win fyne.Window) {
 	})
 }
 
-func SetWindowOnTopRightCorner(win fyne.Window) {
+func SetWindowOnTopRightCorner(win fyne.Window, width int) {
 	runX11Operation(win, func(x11Context driver.X11WindowContext, x *xgb.Conn, screen *xproto.ScreenInfo) {
 		x11Window := x11Context.WindowHandle
 
@@ -121,8 +120,9 @@ func SetWindowOnTopRightCorner(win fyne.Window) {
 			if crtcInfo.Width != 0 && crtcInfo.Height != 0 {
 				// Only use focused window
 				if windowInMonitor(focusedWindow, x, crtcInfo) {
-					width := int16(crtcInfo.X + int16(crtcInfo.Width) - consts.WindowWidth)
+					width := int16(crtcInfo.X + int16(crtcInfo.Width) - int16(width))
 					height := int16(crtcInfo.Y)
+					log.Printf("width %v", width)
 
 					// Move the window to the top-right corner
 					err = xproto.ConfigureWindowChecked(
