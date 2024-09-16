@@ -122,7 +122,6 @@ func SetWindowOnTopRightCorner(win fyne.Window, width int) {
 				if windowInMonitor(focusedWindow, x, crtcInfo) {
 					width := int16(crtcInfo.X + int16(crtcInfo.Width) - int16(width))
 					height := int16(crtcInfo.Y)
-					log.Printf("width %v", width)
 
 					// Move the window to the top-right corner
 					err = xproto.ConfigureWindowChecked(
